@@ -1,6 +1,6 @@
 # 1. Theoretical Foundation
 
-## 1.1 Introduction
+## Introduction
 
 serial computing: serial implementation of programs for single CPUs 
 parallel computing: program is executed using multiple machines
@@ -54,9 +54,9 @@ References
 - concurrency(并发性)；
 - what is HPC?   What is MPI?
 
-## 1.2 High performance computing (HPC) principles, metrics, and models
+## High performance computing (HPC) principles, metrics, and models
 
-**Outline: 
+**Outline: **
 
 - principles of hpc
 - the roofline model
@@ -98,7 +98,7 @@ Then, we found that the real measured performance have a discrepancy from nomina
 - Programming skills in extracting system performance
 - best case scenario for more complex kernels
 
-## 1.3 Cache/Thread-Level Parallelism
+## Cache/Thread-Level Parallelism
 
 **Outline:**
 
@@ -136,7 +136,7 @@ Then, we found that the real measured performance have a discrepancy from nomina
 2. How does a Cache work
    42:15
 
-## 1.4 Thread-Level Parallelism
+## Thread-Level Parallelism
 
 - concurrency & parallelism
 - threading models and libraries
@@ -182,21 +182,21 @@ Then, we found that the real measured performance have a discrepancy from nomina
     - 寄存器和堆栈。
     - **而进程由内存空间(代码、数据、进程空间、打开的文件)和一个或多个线程组成。**
 
-  - <img src="assets/image-20230106165728533.png" alt="image-20230106165728533" style="zoom:40%;" />
+  - <img src="assets/image-20230106165728533.png" alt="image-20230106165728533" style="zoom:15%;" />
 
     进程和线程之间的关系
 
-  - <img src="assets/image-20230106165818695.png" alt="image-20230106165818695" style="zoom:40%;" />
+  - <img src="assets/image-20230106165818695.png" alt="image-20230106165818695" style="zoom:20%;" />
 
-  - 
+___
 
 # 2. HPC Libraries
 
-## 2.1 OpenMP
+## OpenMP
 
-### 2.1.1 Basics
+### Basics
 
-$\bbox[lightgreen]{Concurrency\ and\ Parallelism}$ 
+$\bbox[lightgreen]{\text{Concurrency and Parallelism}}$ 
 
 **Concurrency:** The existence of two or more stream of instructions, whose execution order cannot be determined a priori.
 
@@ -204,19 +204,17 @@ $\bbox[lightgreen]{Concurrency\ and\ Parallelism}$
 
 <font color=red> There can be concurrency without parallelism, but there cannot be parallelism without concurrency. </font>
 
-$\bbox[lightgreen]{Support\ for\ Parallelism\ in\ Hardware}$
+$\bbox[lightgreen]{\text{Support for Parallelism in Hardware}}$
 
 -  Multiple physical cores (Thread-Level Parallelism)
 - Pipelining (Instruction-Level Parallelism)
 - Vectorization (Data-Level Parallelism)
 
-<img src="assets/image-20230106170640201.png" alt="image-20230106170640201" style="zoom:42%;" /><img src="assets/image-20230106170701334.png" alt="image-20230106170701334" style="zoom:50%;" />
+<img src="assets/image-20230106170640201.png" alt="image-20230106170640201" style="zoom:30%;" /><img src="assets/image-20230106170701334.png" alt="image-20230106170701334" style="zoom:30%;" />
 
-<img src="assets/image-20230106170824205.png" alt="image-20230106170824205" style="zoom:50%;" />
+<img src="assets/image-20230106170824205.png" alt="image-20230106170824205" style="zoom:35%;" />
 
-
-
-$\bbox[lightgreen]{Processes\ and\ Threads}$
+$\bbox[lightgreen]{\text{Processes and Threads}}$
 
 **Processes:**
 
@@ -232,16 +230,519 @@ $\bbox[lightgreen]{Processes\ and\ Threads}$
 - All threads associated to the same process share the same virtual address space
 - Programmer can control creation/deletion of additional threads
 
+### Threading Libraries
 
+$\bbox[lightgreen]{\text{POSIX Threads (Pthreads)}}$
 
-### 2.2.2 Threading Libraries
-
-$\bbox[lightgreen]{POSIX\ Threads\ (Pthreads)}$
-
-- Standardized C language threads programming interface http://pubs.opengroup.org/onlinepubs/9699919799/
+- Standardized ==C language== threads programming interface http://pubs.opengroup.org/onlinepubs/9699919799/
 - Header file: `#include <pthread.h>`
 - Compilation: `gcc -pthread -o myprog myprog.c`
 - Allows access to low-level features on shared memory platforms
 - More lines of code compared to higher-level API’s
 - Not straightforward for incremental parallelism
 
+$\bbox[lightgreen]{\text{C++11 Threads}}$
+
+- POSIX threads API is quite rigid and requires lots of additional code
+- Another possibility to work with threads is available in C++ (2011 standard) 
+- Integrate well with ==C++== and its features
+- Relatively easy to get started with
+- Header file:`#include <thread>`
+- Compilation: `g++ -std=c++11 -pthread -o my-dog my-dog.cpp`
+
+**Comparision between two Threads-oriented libraries:**
+
+<img src="assets/image-20230111145248965.png" alt="image-20230111145248965" style="zoom:30%;" />
+
+$\bbox[lightgreen]{\text{OpenMP: Open Multi-Processing}}$
+
+An **A**pplication **P**rogramming **I**nterface (API) to explicitly define mutli-threaded parallelism on shared memory architectures.
+
+- **Comprised of 3 components:**
+  - Pre-compiler directives (#pragma) (not present in POSIX or C++11)
+  - Runtime library calls [Optional]
+  - Environment variables (not present in POSIX or C++11) [Optional]
+- **Header file:** `#include <omp.h>` **[Optional]**
+- **Compile with:**
+  - `g++ -fopenmp -o my-dog my-dog.cpp` (GCC)
+  - `clange++ -fopenmp -o my-dog my-dog.cpp` (LLVM)
+  - `icpc -qopenmp -o myprog myprog.cpp` (Intel)
+
+$\bbox[lightgreen]{\text{Reason why we use OpenMP}}$
+
+**Pros:**
+
+- Easy to use and allows to parallelize existing serial programs with minimum effort 
+- Parallelization can be done incrementally
+- Widely used and supported
+- Portability:
+  - C/C++ and Fortran
+  - Supports Unix/Linux platforms as well as Windows
+
+**Cons:**
+
+- Does not automatically check for race conditions, deadlocks
+- Is not designed for distributed memory systems
+- Nor is it designed for parallel I/O (user is responsible for synchronization)
+
+**Comparision between two Threads-oriented libraries:**
+
+<img src="assets/image-20230111154426056.png" alt="image-20230111154426056" style="zoom:30%;" />
+
+### Syntax
+
+$\bbox[lightgreen]{\text{Usage of OpenMP}}$
+
+**OpenMP Syntax Format:**
+
+- Precompiler directives:
+  - c/c++: `#pragma omp construct [clause [clause] ...]`
+- since we use directives, no changes need to be made for a complier that doesn't support OpenMP!
+
+**Thread Count:**
+
+The number of threads in a parallel region is determined by the following factors, in order of precedence:
+
+1. Evaluation of an `if` clause within the omp pragma
+2. Setting the `num_threads` clause  eg:`#pragma omp parallel num_threads(2)`
+3. Use of the `omp_set_num_threads()` library function
+4. Setting the `OMP_NUM_THREADS` environment variable
+5. Implementation default — usually the number of CPUs available
+
+**Core Concepts:** Fork/Join Parallel Regions
+
+- Program executes in serial until it encounters a parallel directive
+- The thread that encounters the parallel region creates the children (team of threads)
+- The encountering thread becomes the master thread inside the region (thread_id = 0)
+- The threads synchronize at a barrier at the end of the parallel region. The master thread then continues
+
+```c++
+#pragma omp parallel [clause llist] new-line
+​      Structured block
+```
+
+**Example:**
+
+<img src="assets/image-20230112153940827.png" alt="image-20230112153940827" style="zoom:30%;" />
+
+- Note: If the structure block in a single line, then you may omit the curly braces.
+
+Output: 
+
+```c++
+1 Hello from thread Hello from thread Hello from thread Hello from thread 3 2 201
+2 201
+3
+4
+```
+
+#### Work Sharing Constructs
+
+$\bbox[lightgreen]{\text{Definition of Work Sharing Constructs}}$
+
+OpenMP gives us access to the following work sharing constructs:
+
+- *Loop construct*: Specifies that the iterations of one or more associated loops will be executed in parallel by the threads in the team. ==Used very often!==
+-  *Sections construct*: A non-iterative work sharing construct that contains a set of structured blocks that are to be distributed among and executed by the threads in a team.
+- *Single construct*: Specifies that the associated structured block is executed by only one of the threads in the team (not necessarily the master thread).
+
+<font color=red> **Remember:**</font> All work sharing constructs have an implicit barrier at the end (unless the *nowait* clause is used).
+
+**Example:** Parallelizing a For-loop Manually
+
+<img src="assets/image-20230112155639543.png" alt="image-20230112155639543" style="zoom:30%;" />
+
+- Manually allocating the the number of points needed to operate in every thread is very cumbersome, but is very often in MPI. If we use `#pragma omp parallel`, OpenMP does the partitioning of work for us! (Less code, cleaner and more readable!)
+
+==Next, we will discuss these sharing construct one by one!==
+
+##### Loop Construct (Parallel for-loops)
+
+$\bbox[lightgreen]{\text{Definition}}$
+
+The loop construct is the most important of the OpenMP work sharing constructs. Let’s look a bit closer:
+
+```c++
+#pragma omp for [clause[[,]clause]...] new-line
+for-loops
+```
+
+**Clause can be:**
+
+- `private(list)`; `firstprivate(list)`; `lastprivate(list)`
+- `schedule(kind [, chunk_size])`
+- `collapse(n)`
+- `reduction(reduction-identifier:list)`
+- `nowait`
+- Note: There are a few more clauses that we do not discuss in this lecture notes. You can find a full list in the OpenMP specification. https://www.openmp.org/specifications/
+
+$\bbox[lightgreen]{\text{regular use}}$
+
+- `#pragma omp parallel`
+  - 后面的structure block被并行执行，设置了多少个thread，等价上来说就是执行多少次
+  - 相当于并行的thread做了同一个事情，代码执行只有速度上的差异，没有执行量上的差异。
+  - <img src="assets/image-20221106172005068.png" alt="image-20221106172005068" style="zoom:20%;" />
+
+- `#pragma omp parallel for`
+
+  - 后面的for循环被拆分成多少个子快，每个子块通过一个thread去并行。
+
+  - 但是这里需要注意的是，如果各个子块thread之间有数据依赖的话，则很有可能会出错
+  - <img src="assets/image-20221106171854721.png" alt="image-20221106171854721" style="zoom:22%;" />
+  - <font color=red> 并行潜力的实现主要体现在对循环的处理上.</font>
+
+$\bbox[lightgreen]{\text{Loop Scheduling}}$
+
+**Motivation:** There are different ways to distribute the work among threads in a team. We care about this to have more control over parallel granularity and load-balancing.
+
+<font color=red> Usually, we discussed about loop scheduling in `for` loop. </font> 
+
+```c++
+#pragma omp for schedule (kind [, chunk_size]) new-line
+for-loops
+```
+
+- <img src="assets/image-20221106184908894.png" alt="image-20221106184908894" style="zoom:15%;" />
+  - 内存的访问是连续的，在读入cache中，不进行大量换入换出等额外开销。
+- <img src="assets/image-20221106185057905.png" alt="image-20221106185057905" style="zoom:15%;" />
+
+**Solutions: 循环调度(Loop Scheduling):**
+
+循环调度的种类：
+
+- 静态调度：在循环执行之前，就已经将循环任务分配好 （就像我们的`#pragma omp parallel for`）
+- 动态调度：在循环执行的过程中，边执行变分配
+
+OpenMP提供了一个选项`schedule`，它能够将循环的分配给每个线程。当采用不同的参数的时候，我们会使用不同的调度方式。
+
+- `schedule(static[,chunk])`
+  - 当采用static的参数时，chunk代表了每一块分块的大小
+  - 他会采取轮转制度，按照线程的数量，获得分配的一块大小的内容。在循环开始前就已经确定。
+  - 低开销，但是可能会造成分配不均
+  - <img src="assets/image-20221106185701294.png" alt="image-20221106185701294" style="zoom:20%;" />
+
+- `schedule(dynamic[,chunk])`
+
+  - 当采用dynamic的参数时
+
+  - chunk代表了每一块分块的大小
+
+  - 每个线程执行完毕后，会自动获取下一块
+
+  - 高开销，但是能减少分配不均衡的情况
+
+  - <img src="assets/image-20221106185923258.png" alt="image-20221106185923258" style="zoom:20%;" />
+
+    
+
+    
+
+- `schedule(guided[,chunk])`
+
+  - 当采用guide的参数时，会按照一定的规则分配块
+  - 这是一种动态的分配
+  - 每一块的分配的数量时在不断收缩的，但是最小不会小于chunk（默认是1)
+  - 最初的块会被定义成：
+    - 循环数量/线程数
+  - 其余块的大小会被定义成：
+      - 剩余循环数量/线程数
+  - 计算效率比dynamic高一点点。且也有缺陷，例如这个循环从下往上执行，就会导致第一个thread承担非常大的负担。
+  - <img src="assets/image-20221106190147503.png" alt="image-20221106190147503" style="zoom:20%;" />
+
+**Loop scheduling kind (in a picture):**
+
+<img src="assets/image-20230113141418479.png" alt="image-20230113141418479" style="zoom:30%;" />
+
+$\bbox[lightgreen]{\text{Nested Loops}}$
+
+**Motivation:** How does OpenMP parallelize nested loops:
+
+```c++
+#pragma omp parallel
+{
+  #pragma omp for
+  for(int i=0;i<N;++i){
+    for(int j=0;j<N;++j){
+      A[i][j]= //do something here
+    }
+  }
+}
+```
+
+- The `#pragma omp for` applies to the for-loop that immediately follows it
+- Because the innermost loop and the outermost loop are independent, can we use more efficient way for parallel?
+
+**Solution: Loop Collapsing**
+
+Multiple loops associated to a loop construct can be collapsed (combined or fused) into a single loop with a larger iteration space if they are ==perfectly nested==.
+
+```c++
+#pragma omp for collapse(n) new-line
+for-loops
+```
+
+- `n` must be a constant positive integer expression.
+- <font color=red>But be aware:</font> If execution of any associated loop changes any of the values used to compute any of the iteration counts, then the behavior is unspecified!
+- Benefits of loop collapsing: (1) Can achieve better utilization of available resources; (2) Increased performance due to better load-balancing.
+
+**Example 1:**
+
+<img src="assets/image-20230113142744079.png" alt="image-20230113142744079" style="zoom:30%;" />
+
+**Example 2:**
+
+<img src="assets/image-20230113142931913.png" alt="image-20230113142931913" style="zoom:26%;" />
+
+$\bbox[lightgreen]{\text{Reduction}}$
+
+**Definition:** A reduction is a common operation where a specific operation is performed on all elements on some set of data (==distributed on different threads==). This can be done efficiently with the reduction clause:
+
+<img src="assets/image-20230113143307744.png" alt="image-20230113143307744" style="zoom:25%;" />
+
+**Example:** Sum the elements in an array in parallel
+
+<img src="assets/image-20230113143545527.png" alt="image-20230113143545527" style="zoom:30%;" />
+
+**Detailed Introduction of Reduction:(归并）**
+
+reduction也是一种常见的选项，它为我们的parallel，for和sections提供一个归并的功能。【在Eigen中，我们也常常遇到数据reduction的情况，在这种情况our motivation往往是将一个Vector/Matrix归并成一个single scalar】
+
+使用方法如下：
+
+`#pragma omp ... Reduction(op:list)`
+
+他会提供一个私有的变量拷贝并且初始化该私有变量。
+
+私有变量的初始化的值取决于选择的归并的操作符。
+
+这些变量的拷贝会在本地线程进行更新。
+
+在最后的出口中，所有的变量拷贝将会通过操作符所定义的规则进行合并的计算，计算成一个共享变量【reduction的核心部分】。
+
+- 有点像`lastprivate`选项，但`lastprivate`只会最后用最后一个线程的私有变量对公有变量进行赋值。而reduction则是按照运算符讲所有线程中操作后再对公有变量进行运算和赋值（初始变量原有的值也会在操作中，这点不像`lastprivate`会选择直接覆盖。
+- <img src="assets/image-20221106174435764.png" alt="image-20221106174435764" style="zoom:15%;" />
+
+
+
+##### Section Construct
+
+`sections` can be used to assign individual structured blocks to different threads in a team:
+
+<img src="assets/image-20230112161625942.png" alt="image-20230112161625942" style="zoom:30%;" />
+
+**sections 和section：**
+
+我们希望不同的线程执行不一样的代码
+
+- `section`
+  - sections在封闭代码的指定部分中，由线程组进行分配任务。当然我们也可以用`tid==1，tid==0`来确定执行
+
+  - 每个独立的section都需要在sections里面。
+
+    - 每个section都是被一个线程执行的。
+
+    - 不同的section可能执行不同的任务
+
+    - 如果一个线程够快，该线程可能执行多个section 【因为使用线程组分配的】
+
+
+
+##### Single Construct
+
+`single` can be used to assign a structured block to one single thread in a team (can be considered as a synchronization construct as well):
+
+<img src="assets/image-20230112161735820.png" alt="image-20230112161735820" style="zoom:30%;" />
+
+- `single` ：该选项是在并行块里使用的
+  - 它告诉编译器接下来紧跟的下段代码将会由只一个线程执行。
+  - 它可能在处理多段线程不安全代码时非常有用
+  - 在不使用no wait选项时，在线程组中不执行single的线程们将会等待single的结束
+- `master`：该选项是在并行块中使用的
+  - 编号为0的线程master进行执行
+  - 它告诉编译器接下来的一段代码只有有主线程执行
+  - 它不会出现等待现象 <font color=red> 所谓是否会出现等待造成的影响就是共有数据是否会出现混乱访问。</font>
+  - <img src="assets/image-20221106173148155.png" alt="image-20221106173148155" style="zoom:20%;" />
+
+##### Combined Construct
+
+**Motivation:** There is only a single *for*-loop in the parallel region, do I need all this code?
+
+**Solution:** No, combined constructs are shortcuts for specifying one construct immediately nested inside another construct. This applies to the `loop` and `sections` constructs we have seen so far.
+
+**Example:**
+
+<img src="assets/image-20230113143952482.png" alt="image-20230113143952482" style="zoom:27%;" />
+
+**<font color=red>Common beginners mistake</font>** is as follows:
+
+<img src="assets/image-20230113144103319.png" alt="image-20230113144103319" style="zoom:27%;" />
+
+##### Synchronization Constructs
+
+同步构造 (synchronization constructs) 确保对线程组之间**共享的内存地址**的**一致访问**，用于**顺序约束**和共享数据的**访问保护**。OpenMP supports several synchronization constructs:
+
+- `critical` (critical sections)
+- `atomic`
+- `barrier`
+- `section` `master` (in fact, not a synchronization construction)
+- `ordered` `flush` `lock` (not discussed in the lecture)
+
+==Synchronization constructs ensure consistent access to memory address that is shared among a team of threads.==
+
+$\bbox[lightgreen]{\text{Race Conditions}}$
+
+Let's use an simple example to explain the race conditions
+
+​                        <img src="assets/image-20230113155740367.png" alt="image-20230113155740367" style="zoom:28%;" /><img src="assets/image-20230113155759456.png" alt="image-20230113155759456" style="zoom:32%;" />
+
+Output of the correspond code: <img src="assets/image-20230113155906122.png" alt="image-20230113155906122" style="zoom:25%;" />
+
+From the above example, we can notice that the code for multi-threads is influenced by race conditions:
+
+<img src="assets/image-20230113160121020.png" alt="image-20230113160121020" style="zoom:25%;" />
+
+- At one time, the shared memory is accessed by multiple threads. Furthermore, we will define the criticial sections as follows:
+
+$\bbox[lightgreen]{\text{Critical Sections}}$
+
+<img src="assets/image-20230113155531872.png" alt="image-20230113155531872" style="zoom:30%;" />
+
+==We need to limit threads to access critical sections one at a time: We use ==Mutual Exclusion Mechanisms==.
+
+#### Data Environment
+
+$\bbox[lightgreen]{\text{Introduction}}$
+
+**Recall:** We are working in a shared memory environment.
+
+- In OpenMP, variables outside a parallel region are shared by default.
+- Global/static variables are shared.
+- Not everything is shared in OpenMP.
+  - Loop index variables
+  - Automatic variables in functions that are called inside the parallel region.
+
+**Three types of data-sharing attributes in OpenMP:**
+
+1. Predetermined (eg. Loop counters, `threadprivate` variables)
+2. Explicitly determined (what you specify in a clause of a construt)
+3. Implicitly determined (everything else)
+
+<font color=purple>**Note:**</font> Data-sharing clauses can only be used in the <font color=purple>lexical extent</font> of the OpenMP directive.
+
+
+
+
+
+Commonly used cluase:
+
+- `default(shared | none)`
+- `shared(list)`
+- `private(list)`
+- `firstprivate(list)`
+- `lastprivate(list)`
+
+**Default Variable 默认变量:**
+
+- `pragma omp ...default (shared | none)
+  - You can chang the default (shared, implicitly determined). The clause must only appear once
+  - `none` means that every variable you reference in a parallel region must be explicitly determined (unless its attribute is predetermined)
+- <img src="assets/image-20230113150539545.png" alt="image-20230113150539545" style="zoom:30%;" />
+
+**Private variable 私有变量：**
+
+- `#pragma omp ... private(<variable list>)` 
+  - 变量作用域分为私有变量和公有变量。上面的命令能够直接告诉编译器去使得共享变量作为每个线程中的私有变量。 Creates a ==private copy== of each variable in the list. The private copy has a different address ==(avoiding data races)==
+  - 如果j被定义为私有变量，那么在for循环里面，所有的线程都不能访问其他j（尽管j是共享变量）
+  - 所有线程都不会使用到先前的定义。也就是私有变量在各个thread中会被初始化，和之前的值完全没有关系 The private copy is not initialized, no association with the global variable.
+  - 所有线程都不能给共享的j赋值
+  - 在循环的入口以及出口，都不会进行定义（就是前两条的总结）
+  - <img src="assets/image-20230113150125031.png" alt="image-20230113150125031" style="zoom:25%;" />
+- `#pragma omp parallel for firstprivate(x)`
+  - Special case of `private (list)`
+  - 告诉编译器私有变量在第一个循环会继承共享变量的值 The private copy is ==initialized== to the value seen by the `master` thread. Its association with the global variable is its ==initialization.==
+  - 其使用方法和private几乎一致。
+  - 其本质就是在第一个循环实现了数据的一个拷贝（从共有 $\rightarrow$ 私有）
+  - <img src="assets/image-20230113150800598.png" alt="image-20230113150800598" style="zoom:30%;" />
+- `#pragma omp parallel for lastprivate(x)`
+  - Special case of `private (list)`
+  - The private copy is not initialized, as in `private(list)`
+  - Its association with the global variable is its update after the parallel region (<font color=red>careful:</font> data races) 告诉编译器私有变量会在最后一个循环出去的时候，用私有变量的值替换掉我们的共享变量的值。
+  - 因为不同thread的速度不一样，到底是哪个thread进行赋值呢？答：当负责最后一个iteration的线程离开循环的时候，它会将该私有变量的值赋值给当前共享变量的值。
+  - <img src="assets/image-20230113151112578.png" alt="image-20230113151112578" style="zoom:30%;" />
+
+
+
+**OpenMP同步与互斥：**
+
+在很多时候，需要线程之间团结协作完成某个任务，这就要求线程能够完成一致协调合作。
+
+OpenMP提供了多个操作。
+
+Barriers、critical分别用于实现同步与互斥。
+
+- `barrier` 实现不同thread之间的同步
+
+  - 用与实现同步的一种手段。他会在代码的某个点，令线程停下直到所有的线程都到达该地方。
+  - 使用的语法如下：
+  - `#pragma omp barrier`
+  - 许多情况下，它已经能够自动的插入到工作区结尾。比如说在for，single。但是它能够被nowait禁用。
+  - <img src="assets/image-20221106175615574.png" alt="image-20221106175615574" style="zoom:20%;" />
+
+- `nowait`
+
+  - 用于打断自动添加的barrier的类型
+
+  - 如parallel中的for以及single
+    - `#pragma omp for nowait`
+    - `#pragma omp single nowait`
+
+**OpenMP竞争：**  
+
+- `#pragma omp critical`
+
+  - OpenMP提供了一个实现互斥的接口。critical选项
+  - 使用方法 `#pragma omp critical`
+    - 它告诉编译器在接下来的一段代码在同一个时间段将会只由一个线程进行
+    - 如果一段代码在同一个时间段被多个线程进行，那么有可能在数据的写入或者读出时，会发生竞争。
+    
+  - 好处：解决了竞争现象
+  - 坏处：使用critical会让程序执行减少并行化程度。必须要写代码的人手动判断哪些部分需要critical 【保护某些关键数据，一般来说就是修改我们的共享变量时候】 
+
+- `#pragma omp atomic`
+
+  - 在特殊的情况下，除了使用critical选项控制临界区以外，我们还可以使用其他选项去保证内存的控制是原子的
+
+  - OpenMP提供了一个选项：atomic（原子）
+
+  - 它只在特殊的情况下使用：
+
+    - 在自增或者自减的情况下使用
+    - 在二元操作数的情况下使用
+
+  - 只会应用于一条指令
+
+    - ```c++
+      #pragma omp atomic
+      counter +=5;
+      ```
+
+    - <img src="assets/image-20221106184757451.png" alt="image-20221106184757451" style="zoom:20%;" />
+
+- - -
+
+### Common Usage
+
+1.  `#pragma omp parallel num_threads(i) if (paralle: i>2)`: Explicitly specify to which directive the if applies. Useful for composite and combined constructs. If not specified, the if applies to all constructs to which an if clause can apply.
+
+   ```c++
+   for (int i = 1; i <= 4; ++i){
+   cout<<"Number of threads ="<<i<<endl;
+   #pragma omp parallel num_threads(i) if (paralle: i>2)
+     {
+       const int tid=omp_get_thread_num();
+       #pragma omp critical//the next line is a critical section!
+       cout<<"Hello from the thread"<<tid<<'\n';
+     }}
+   ```
+
+   
