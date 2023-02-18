@@ -1,6 +1,10 @@
 # 1. Theoretical Foundation of HPC for Computational Science and Engineering
 
-​											Shizheng Wen shiwen@student.ethz.ch
+​                                      <font size=3>Shizheng Wen         shiwen@student.ethz.ch</font>
+
+**Course Information:** https://www.cse-lab.ethz.ch/teaching/hpcse-i-hs22/
+
+<font size=3>**Table of Content**</font>
 
 [toc]
 
