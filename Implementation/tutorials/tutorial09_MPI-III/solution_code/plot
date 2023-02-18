@@ -1,0 +1,14 @@
+#!/bin/sh
+
+gnuplot << EOF
+
+set terminal png
+set output "image.png"
+
+set xrange [-2:2]
+set yrange [-2:2]
+set size square
+
+plot "init.dat" , "final.dat"
+
+EOF

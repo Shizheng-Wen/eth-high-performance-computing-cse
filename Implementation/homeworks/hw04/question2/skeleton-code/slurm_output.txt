@@ -1,0 +1,60 @@
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                128
+On-line CPU(s) list:   0-127
+Thread(s) per core:    1
+Core(s) per socket:    64
+Socket(s):             2
+NUMA node(s):          8
+Vendor ID:             AuthenticAMD
+CPU family:            25
+Model:                 1
+Model name:            AMD EPYC 7763 64-Core Processor
+Stepping:              1
+CPU MHz:               1500.000
+CPU max MHz:           2450.0000
+CPU min MHz:           1500.0000
+BogoMIPS:              4890.66
+Virtualization:        AMD-V
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              512K
+L3 cache:              32768K
+NUMA node0 CPU(s):     0-15
+NUMA node1 CPU(s):     16-31
+NUMA node2 CPU(s):     32-47
+NUMA node3 CPU(s):     48-63
+NUMA node4 CPU(s):     64-79
+NUMA node5 CPU(s):     80-95
+NUMA node6 CPU(s):     96-111
+NUMA node7 CPU(s):     112-127
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc art rep_good nopl nonstop_tsc extd_apicid aperfmperf eagerfpu pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_l2 cpb cat_l3 cdp_l3 invpcid_single hw_pstate sme retpoline_amd ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload vgif umip pku ospke vaes vpclmulqdq overflow_recov succor smca
+1 threads run
+result:  17.01020302298979913758
+ref: 1.70097775999999996088e+01
+time: 21.71941078800000113347
+2 threads run
+ERROR: you should get pi, but got: 8.50612913149387139811
+4 threads run
+ERROR: you should get pi, but got: 4.25288825574711193411
+8 threads run
+ERROR: you should get pi, but got: 2.12751305787248679025
+12 threads run
+ERROR: you should get pi, but got: 1.41892721858107284660
+16 threads run
+ERROR: you should get pi, but got: 1.06412453893587555243
+24 threads run
+ERROR: you should get pi, but got: 0.70938827929061176736
+32 threads run
+result:  17.00590786299409273852
+ref: 1.70097775999999996088e+01
+time: 0.97381606499999995297
+40 threads run
+result:  17.00655640299344284472
+ref: 1.70097775999999996088e+01
+time: 0.66977343199999994638
+48 threads run
+result:  17.00600668299399131911
+ref: 1.70097775999999996088e+01
+time: 0.51799316800000005934

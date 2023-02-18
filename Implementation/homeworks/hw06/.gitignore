@@ -1,0 +1,11 @@
+*.aux
+*.log
+*.out
+hw06.pdf
+solution06.pdf
+solution_code/*.dat
+solution_code/*.png
+solution_code/*main
+skeleton_code/*.dat
+skeleton_code/*.png
+skeleton_code/*main

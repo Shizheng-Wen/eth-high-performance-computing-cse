@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eu
+
+maxnth=${OMP_NUM_THREADS:-4}
+
+echo "# $@"
+echo "nthreads twalk thist swalk shist"
+
+for nth in `seq 1 $maxnth` ; do
+  for n in `seq 1 10` ; do
+    cmd="OMP_NUM_THREADS=$nth ./main $@"
+    echo "$cmd" >&2
+    o=`eval "$cmd"`
+    twalk=`echo "$o" | grep walk | cut -d' ' -f2`
+    thist=`echo "$o" | grep hist | cut -d' ' -f2`
+    if [ "$nth" == "1" ] ; then
+      twalk0=$twalk
+      thist0=$thist
+    fi
+    # speedup
+    swalk=$(awk "BEGIN { printf \"%.4f\", $twalk0 / $twalk }")
+    shist=$(awk "BEGIN { printf \"%.4f\", $thist0 / $thist }")
+    echo "$nth" "$twalk" "$thist" "$swalk" "$shist"
+  done
+done

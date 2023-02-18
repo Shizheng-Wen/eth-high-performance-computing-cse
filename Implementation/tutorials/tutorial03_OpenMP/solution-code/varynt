@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eu
+
+for nt in 1 2 4 8 16 24; do
+  c="OMP_NUM_THREADS=$nt ./main $@"
+  echo "$c" >&2
+  o=`eval "$c"`
+  wt=`echo "$o" | grep time | cut -d' ' -f2`
+  echo "$nt" "$wt"
+done

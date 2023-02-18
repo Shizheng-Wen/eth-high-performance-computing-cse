@@ -1,0 +1,4 @@
+lscpu
+printf '=%.0s' {1..80}
+echo
+(cd /sys/devices/system/cpu/cpu0/cache && for d in index* ; do (cd $d && grep . *) ; echo ; done)

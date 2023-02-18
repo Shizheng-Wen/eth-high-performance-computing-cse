@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -eu
+
+dat=${1:-time.dat}
+title=${2:-$dat `head -n1 "$dat"`}
+
+gnuplot << EOF
+
+set terminal pdf size 4,3 noenhanced
+set output 'scaling.pdf'
+set key outside
+set title "$title"
+set xlabel "threads"
+
+set ylabel "strong scaling efficiency"
+set xtics 12
+set xrange [0:]
+set yrange [0:1.2]
+plot \
+  "$dat" u "nthreads":(column("swalk")/column("nthreads")) w p pt 7 ps 0.2 t "walk" ,\
+  "$dat" u "nthreads":(column("shist")/column("nthreads")) w p pt 2 ps 0.6 t "hist" ,\
+  1 w l dt '-' lw 2 lc rgb 'black' t 'ideal'
+
+set output 'speedup.pdf'
+set ylabel "speedup"
+unset yrange
+set ytics 12
+plot \
+  "$dat" u "nthreads":"swalk" w p pt 7 ps 0.2 t "walk" ,\
+  "$dat" u "nthreads":"shist" w p pt 2 ps 0.6 t "hist" ,\
+  x w l dt '-' lw 2 lc rgb 'black' t 'ideal'
+
+EOF

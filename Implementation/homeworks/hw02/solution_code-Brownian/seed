@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -eu
+
+r () {
+  seed=$1
+  nthreads=$2
+  make -B EXTRA="-DSEED=$seed" main
+  OMP_NUM_THREADS=$nthreads ./main 1000 1
+  ./plot "seed=$seed nthreads=$nthreads"
+  mv -v hist.pdf hist_${seed}_${nthreads}.pdf
+}
+
+r 19 1
+r 19 500
+r 20 1
+r 20 500

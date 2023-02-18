@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -eu
+
+r () {
+  f=$1
+  title=$2
+  d=${1%.dat}
+  mkdir -vp "$d"
+  ../plot_scaling "$f" "$title"
+  mv -v scaling.pdf speedup.pdf $d/
+}
+
+r time1bind.dat "OMP_PROC_BIND=true"
+r time1nobind.dat "OMP_PROC_BIND=false"
+r time1cores.dat "OMP_PLACES=cores"

@@ -1,0 +1,26 @@
+HOW TO RUN
+----------
+To run the code on Euler remove all previously loaded nodules (purge) and load the following modules:
+
+env2lmod
+module load gcc
+module load openmpi
+
+You can request 8 cores and an interative shell to work with:
+bsub -n 8 -W  04:00 -Is bash
+
+Then compile and run by typing
+make run
+
+
+WHAT TO MODIFY
+--------------
+You only need to change the code in wave.cpp
+When the code runs, it prints a checksum. This number should be the same for the solution you provide.
+
+
+CODE OUTPUT 
+-----------
+the code will output simple .txt files with the solution, saved as
+x y z u
+...

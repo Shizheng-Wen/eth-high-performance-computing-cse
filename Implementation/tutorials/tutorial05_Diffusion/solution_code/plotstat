@@ -1,0 +1,22 @@
+#!/bin/bash
+
+gnuplot << EOF
+
+set terminal pngcairo
+
+set xlabel 'threads'
+set ylabel 'time [ms]'
+set output 'stat.png'
+set grid
+set key Left left bottom
+set logscale x 2
+set logscale y 2
+t0 = `sed 's,.* ,,;q' out/m0`
+set style data lp
+plot \
+  "out/m0" lw 3 pt 7 t 'run 0', \
+  "out/m1" lw 3 pt 7 t 'run 1', \
+  "out/m2" lw 3 pt 7 t 'run 2', \
+  t0/x w l lw 1 lc 'black' t 'ideal'
+
+EOF
